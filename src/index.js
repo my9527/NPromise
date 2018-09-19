@@ -13,7 +13,7 @@ class NPromise {
 		this.endFns = [];
 		fn.call(null, this.resolve.bind(this), this.reject.bind(this));
 	}
-	// 进入下一个then 中， 如果返回了 FSM 实例（rr），那么在 rr resolve或者reject 后进入下一个then;
+	// 进入下一个then 中， 如果返回了 NPromise 实例（rr），那么在 rr resolve或者reject 后进入下一个then;
 	resolve(res){
 		this.state = RESOLVED;
 		this.next(res);
@@ -38,7 +38,7 @@ class NPromise {
 		const thenFn = this.thenArr.shift();
 
 		result =  isResolved ? thenFn.resolve(res) : thenFn.reject(res);
-		if(result instanceof FSM){
+		if(result instanceof NPromise){
 			result.end.call(result, val=>{self.next(val)});
 		} else {
 			this.next(result);
